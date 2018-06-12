@@ -5,12 +5,13 @@ import java.util.Scanner;
 
 public class Map {
 
+    private int k;
     private List<Centroid> centroids = new ArrayList<>();
     private List<Point> points = new ArrayList<>();
 
-    public Map() {
+    public Map(int k) {
+        this.k = k;
         loadPoints("attract_small.txt");
-        System.out.println(points.toString());
     }
 
     public void loadPoints(final String file_name) {
@@ -28,7 +29,7 @@ public class Map {
             }
 
         } catch (Exception e) {
-
+            System.err.println(e.getMessage());
         }
     }
 }
