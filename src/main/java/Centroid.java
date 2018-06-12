@@ -1,3 +1,5 @@
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +14,20 @@ public class Centroid {
         calculateCenter(x_min, x_max, y_min, y_max);
     }
 
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public List<Point> getPoints() {
+        return points;
+    }
+
     public boolean addPoint(Point p) {
+        p.setCentroid(this);
         return points.add(p);
     }
 
@@ -56,5 +71,19 @@ public class Centroid {
         sb.append(points.size() + "]");
 
         return sb.toString();
+    }
+
+    public boolean equals(Centroid c) {
+        if (c == null) { return false; }
+        if (c == this) { return true; }
+        if (c.getClass() != getClass()) {
+            return false;
+        }
+        return new EqualsBuilder()
+                .appendSuper(super.equals(c))
+                .append(x, c.getX())
+                .append(y, c.getY())
+                .append(points.size(), c.getPoints())
+                .isEquals();
     }
 }
