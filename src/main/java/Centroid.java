@@ -15,4 +15,11 @@ public class Centroid {
     public boolean addPoint(Point p) {
         return points.add(p);
     }
+
+    public double distanceTo(Point p) {
+        return Math.sqrt(
+                Math.pow(x - p.getX(), 2) +
+                Math.pow(y - p.getY(), 2)
+        );
+    }
 }
