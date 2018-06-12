@@ -1,15 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Centroid {
 
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     List<Point> points = new ArrayList<>();
 
-    public Centroid(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Centroid(double x_min, double x_max, double y_min, double y_max) {
+        calculateCenter(x_min, x_max, y_min, y_max);
     }
 
     public boolean addPoint(Point p) {
@@ -18,6 +18,24 @@ public class Centroid {
 
     public boolean removePoint(Point p) {
         return points.remove(p);
+    }
+
+    public void calculateCenter(double x_min, double x_max, double y_min, double y_max) {
+        if (points.size() > 0) {
+            double x_mean = 0d, y_mean = 0d;
+
+            for (Point p : points) {
+                x_mean += p.getX();
+                y_mean += p.getY();
+            }
+
+            x = x_mean / points.size();
+            y = y_mean / points.size();
+        } else {
+            Random rng = new Random();
+            x = x_min + (x_max - x_min) * rng.nextDouble();
+            y = y_min + (y_max - y_min) * rng.nextDouble();
+        }
     }
 
     public double distanceTo(Point p) {
