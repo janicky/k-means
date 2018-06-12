@@ -2,6 +2,7 @@ public class Point {
 
     private double x;
     private double y;
+    private Centroid centroid;
 
     public Point(double x, double y) {
         this.x = x;
@@ -14,6 +15,10 @@ public class Point {
 
     public double getY() {
         return y;
+    }
+
+    public void setCentroid(Centroid c) {
+        centroid = c;
     }
 
     @Override
