@@ -8,18 +8,66 @@ public class Map {
     private int k;
     private List<Centroid> centroids = new ArrayList<>();
     private List<Point> points = new ArrayList<>();
+    private List<Integer> last_centroids = new ArrayList<>();
+    private List<Integer> current_centroids = new ArrayList<>();
+    private boolean first_assignment = true;
 
     public Map(int k) {
         this.k = k;
         loadPoints("attract_small.txt");
         createCentroids();
-        assignToCentroids();
-        System.out.println(centroids.toString());
+
+        for (Centroid c : centroids) {
+            last_centroids.add(centroids.indexOf(c), 0);
+            current_centroids.add(centroids.indexOf(c), c.getPoints().size());
+        }
+
+        boolean stop = false;
+        while (!stop) {
+            stop = true;
+            calculateAssignments();
+
+            for (Centroid c : centroids) {
+                last_centroids.set(centroids.indexOf(c), current_centroids.get(centroids.indexOf(c)));
+                current_centroids.set(centroids.indexOf(c), c.getPoints().size());
+                int current = current_centroids.get(centroids.indexOf(c));
+                int last = last_centroids.get(centroids.indexOf(c));
+
+                if (current != last && current != 0) {
+                    stop = false;
+                }
+            }
+            System.out.println(centroids.toString());
+        }
+
+
     }
 
     private void createCentroids() {
         for (int i = 0; i < k; i++) {
             centroids.add(new Centroid(-20.0, 20.0, -20, 20));
+        }
+    }
+
+    private void calculateAssignments() {
+        if (!first_assignment) {
+            for (Point p : points) {
+                Centroid candidate = null;
+                double min_dist = Double.MAX_VALUE;
+                for (Centroid c : centroids) {
+                    if (c.distanceTo(p) < min_dist) {
+                        min_dist = c.distanceTo(p);
+                        candidate = c;
+                    }
+                }
+                if (!p.getCentroid().equals(candidate)) {
+                    p.getCentroid().removePoint(p);
+                    candidate.addPoint(p);
+                }
+            }
+        } else {
+            assignToCentroids();
+            first_assignment = false;
         }
     }
 

@@ -27,15 +27,33 @@ public class Centroid {
     }
 
     public boolean addPoint(Point p) {
-        p.setCentroid(this);
-        return points.add(p);
+        boolean result = points.add(p);
+        if (result) {
+            p.setCentroid(this);
+        }
+        calculateCenter();
+        return result;
     }
 
     public boolean removePoint(Point p) {
-        return points.remove(p);
+        boolean result = points.remove(p);
+        if (result) {
+            p.setCentroid(null);
+        }
+        calculateCenter();
+        return result;
     }
 
     public void calculateCenter(double x_min, double x_max, double y_min, double y_max) {
+        calculateCenter();
+        if (points.size() == 0) {
+            Random rng = new Random();
+            x = x_min + (x_max - x_min) * rng.nextDouble();
+            y = y_min + (y_max - y_min) * rng.nextDouble();
+        }
+    }
+
+    private void calculateCenter() {
         if (points.size() > 0) {
             double x_mean = 0d, y_mean = 0d;
 
@@ -46,10 +64,6 @@ public class Centroid {
 
             x = x_mean / points.size();
             y = y_mean / points.size();
-        } else {
-            Random rng = new Random();
-            x = x_min + (x_max - x_min) * rng.nextDouble();
-            y = y_min + (y_max - y_min) * rng.nextDouble();
         }
     }
 
