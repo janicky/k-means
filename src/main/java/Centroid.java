@@ -44,4 +44,17 @@ public class Centroid {
                 Math.pow(y - p.getY(), 2)
         );
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[x: ");
+        sb.append(x);
+        sb.append(", y: ");
+        sb.append(y);
+        sb.append(", points: ");
+        sb.append(points.size() + "]");
+
+        return sb.toString();
+    }
 }
