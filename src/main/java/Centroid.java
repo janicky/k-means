@@ -100,4 +100,12 @@ public class Centroid {
                 .append(vectors.size(), c.getVectors())
                 .isEquals();
     }
+
+    public double getError() {
+        double sum = 0d;
+        for (Point p : points) {
+            sum += Math.sqrt(Math.pow(p.getX() - x, 2) + Math.pow(p.getY() - y, 2));
+        }
+        return sum;
+    }
 }

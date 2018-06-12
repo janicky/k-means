@@ -1,9 +1,5 @@
-import de.alsclo.voronoi.Voronoi;
-import de.alsclo.voronoi.graph.Point;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,10 +7,13 @@ public class Map {
 
     private int k;
     private List<Centroid> centroids = new ArrayList<>();
-    private List<Vector> vectors = new ArrayList<>();
+    private List<Point> points = new ArrayList<>();
     private List<Integer> last_centroids = new ArrayList<>();
     private List<Integer> current_centroids = new ArrayList<>();
     private boolean first_assignment = true;
+    private double global_error = Double.MAX_VALUE;
+    private double last_global_error;
+    private double precision = 0.000005;
 
     public Map(int k) {
         this.k = k;
@@ -23,33 +22,26 @@ public class Map {
 
         for (Centroid c : centroids) {
             last_centroids.add(centroids.indexOf(c), 0);
-            current_centroids.add(centroids.indexOf(c), c.getVectors().size());
+            current_centroids.add(centroids.indexOf(c), c.getPoints().size());
         }
 
-        boolean stop = false;
-        while (!stop) {
-            stop = true;
+        double active_error;
+        do {
             calculateAssignments();
 
             for (Centroid c : centroids) {
                 last_centroids.set(centroids.indexOf(c), current_centroids.get(centroids.indexOf(c)));
-                current_centroids.set(centroids.indexOf(c), c.getVectors().size());
+                current_centroids.set(centroids.indexOf(c), c.getPoints().size());
                 int current = current_centroids.get(centroids.indexOf(c));
                 int last = last_centroids.get(centroids.indexOf(c));
-
-                if (current != last && current != 0) {
-                    stop = false;
-                }
             }
-            System.out.println(centroids.toString());
-        }
+            last_global_error = global_error;
+            global_error = getGlobalError();
+            active_error = Math.abs((last_global_error - global_error) / global_error);
+            System.out.println(active_error);
+        } while (active_error > precision);
 
-//        Collection<Point> pts = new ArrayList<>();
-//        for (Vector v : vectors) {
-//            pts.add(new Point(v.getX(), v.getY()));
-//        }
-//        Voronoi voronoi = new Voronoi(pts);
-
+        System.out.println(centroids.toString());
 
     }
 
@@ -61,18 +53,18 @@ public class Map {
 
     private void calculateAssignments() {
         if (!first_assignment) {
-            for (Vector v : vectors) {
+            for (Point p : points) {
                 Centroid candidate = null;
                 double min_dist = Double.MAX_VALUE;
                 for (Centroid c : centroids) {
-                    if (c.distanceTo(v) < min_dist) {
-                        min_dist = c.distanceTo(v);
+                    if (c.distanceTo(p) < min_dist) {
+                        min_dist = c.distanceTo(p);
                         candidate = c;
                     }
                 }
-                if (!v.getCentroid().equals(candidate)) {
-                    v.getCentroid().removeVector(v);
-                    candidate.addVector(v);
+                if (!p.getCentroid().equals(candidate)) {
+                    p.getCentroid().removePoint(p);
+                    candidate.addPoint(p);
                 }
             }
         } else {
@@ -82,16 +74,16 @@ public class Map {
     }
 
     private void assignToCentroids() {
-        for (Vector v : vectors) {
+        for (Point p : points) {
             Centroid candidate = null;
             double min_dist = Double.MAX_VALUE;
             for (Centroid c : centroids) {
-                if (c.distanceTo(v) < min_dist) {
-                    min_dist = c.distanceTo(v);
+                if (c.distanceTo(p) < min_dist) {
+                    min_dist = c.distanceTo(p);
                     candidate = c;
                 }
             }
-            candidate.addVector(v);
+            candidate.addPoint(p);
         }
     }
 
@@ -103,7 +95,7 @@ public class Map {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String [] values = line.split("\\,");
-                vectors.add(new Vector(
+                points.add(new Point(
                         Double.parseDouble(values[0]),
                         Double.parseDouble(values[1])
                 ));
@@ -112,5 +104,16 @@ public class Map {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    private double getGlobalError() {
+        double sum = 0d;
+        if (centroids.size() == 0) {
+            return 0d;
+        }
+        for (Centroid c : centroids) {
+            sum += c.getError();
+        }
+        return sum / centroids.size();
     }
 }
