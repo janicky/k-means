@@ -8,7 +8,7 @@ public class Centroid {
 
     private double x;
     private double y;
-    List<Point> points = new ArrayList<>();
+    List<Vector> vectors = new ArrayList<>();
 
     public Centroid(double x_min, double x_max, double y_min, double y_max) {
         calculateCenter(x_min, x_max, y_min, y_max);
@@ -22,12 +22,12 @@ public class Centroid {
         return y;
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public List<Vector> getVectors() {
+        return vectors;
     }
 
-    public boolean addPoint(Point p) {
-        boolean result = points.add(p);
+    public boolean addVector(Vector p) {
+        boolean result = vectors.add(p);
         if (result) {
             p.setCentroid(this);
         }
@@ -35,8 +35,8 @@ public class Centroid {
         return result;
     }
 
-    public boolean removePoint(Point p) {
-        boolean result = points.remove(p);
+    public boolean removeVector(Vector p) {
+        boolean result = vectors.remove(p);
         if (result) {
             p.setCentroid(null);
         }
@@ -46,7 +46,7 @@ public class Centroid {
 
     public void calculateCenter(double x_min, double x_max, double y_min, double y_max) {
         calculateCenter();
-        if (points.size() == 0) {
+        if (vectors.size() == 0) {
             Random rng = new Random();
             x = x_min + (x_max - x_min) * rng.nextDouble();
             y = y_min + (y_max - y_min) * rng.nextDouble();
@@ -54,20 +54,20 @@ public class Centroid {
     }
 
     private void calculateCenter() {
-        if (points.size() > 0) {
+        if (vectors.size() > 0) {
             double x_mean = 0d, y_mean = 0d;
 
-            for (Point p : points) {
+            for (Vector p : vectors) {
                 x_mean += p.getX();
                 y_mean += p.getY();
             }
 
-            x = x_mean / points.size();
-            y = y_mean / points.size();
+            x = x_mean / vectors.size();
+            y = y_mean / vectors.size();
         }
     }
 
-    public double distanceTo(Point p) {
+    public double distanceTo(Vector p) {
         return Math.sqrt(
                 Math.pow(x - p.getX(), 2) +
                 Math.pow(y - p.getY(), 2)
@@ -81,8 +81,8 @@ public class Centroid {
         sb.append(x);
         sb.append(", y: ");
         sb.append(y);
-        sb.append(", points: ");
-        sb.append(points.size() + "]");
+        sb.append(", vectors: ");
+        sb.append(vectors.size() + "]");
 
         return sb.toString();
     }
@@ -97,7 +97,7 @@ public class Centroid {
                 .appendSuper(super.equals(c))
                 .append(x, c.getX())
                 .append(y, c.getY())
-                .append(points.size(), c.getPoints())
+                .append(vectors.size(), c.getVectors())
                 .isEquals();
     }
 }
