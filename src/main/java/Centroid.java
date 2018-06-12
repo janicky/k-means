@@ -16,6 +16,10 @@ public class Centroid {
         return points.add(p);
     }
 
+    public boolean removePoint(Point p) {
+        return points.remove(p);
+    }
+
     public double distanceTo(Point p) {
         return Math.sqrt(
                 Math.pow(x - p.getX(), 2) +
