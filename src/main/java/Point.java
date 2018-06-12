@@ -21,6 +21,10 @@ public class Point {
         centroid = c;
     }
 
+    public Centroid getCentroid() {
+        return centroid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
