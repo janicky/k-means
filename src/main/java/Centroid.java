@@ -1,5 +1,7 @@
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -76,13 +78,14 @@ public class Centroid {
 
     @Override
     public String toString() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
         StringBuilder sb = new StringBuilder();
-        sb.append("[x: ");
-        sb.append(x);
-        sb.append(", y: ");
-        sb.append(y);
-        sb.append(", points: ");
-        sb.append(points.size() + "]");
+        sb.append("(");
+        sb.append(formatter.format(x));
+        sb.append(", ");
+        sb.append(formatter.format(y));
+        sb.append(") points: ");
+        sb.append(points.size() + "]\n");
 
         return sb.toString();
     }
