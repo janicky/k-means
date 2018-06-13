@@ -80,10 +80,10 @@ public class Diagram extends JFrame {
         }
 
         Graphics2D g = bimg.createGraphics();
-//        for (Point p : points) {
-//            g.setColor(new Color(colors.get(centroids.indexOf(p.getCentroid()))).darker());
-//            g.fill(new Ellipse2D.Double(scaleX(p.getX()), scaleY(p.getY()), 4, 4));
-//        }
+        for (Point p : points) {
+            g.setColor(new Color(colors.get(centroids.indexOf(p.getCentroid()))).darker());
+            g.fill(new Ellipse2D.Double(scaleX(p.getX()), scaleY(p.getY()), 4, 4));
+        }
 
         g.setColor(Color.BLACK);
         for (Centroid c : centroids) {
