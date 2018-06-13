@@ -1,6 +1,7 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Map {
@@ -13,7 +14,8 @@ public class Map {
     private boolean first_assignment = true;
     private double global_error = Double.MAX_VALUE;
     private double last_global_error;
-    private double precision = 0.000005;
+    private double precision = 0.005;
+    private Random rng = new Random();
 
     public Map(int k) {
         this.k = k;
@@ -26,6 +28,7 @@ public class Map {
         }
 
         double active_error;
+        int corrections = 0;
         do {
             calculateAssignments();
 
@@ -38,16 +41,28 @@ public class Map {
             last_global_error = global_error;
             global_error = getGlobalError();
             active_error = Math.abs((last_global_error - global_error) / global_error);
-            System.out.println(active_error);
+            corrections++;
         } while (active_error > precision);
 
-        System.out.println(centroids.toString());
+        Diagram d = new Diagram(400);
+        d.setCentroids(centroids);
+        d.setPoints(points);
+        d.draw();
 
+        System.out.println(centroids.toString());
+        System.out.println("E: " + getGlobalError());
+        System.out.println("e: " + Double.toString(active_error));
+        System.out.println("Corr: " + Integer.toString(corrections - 1));
     }
 
     private void createCentroids() {
         for (int i = 0; i < k; i++) {
-            centroids.add(new Centroid(-20.0, 20.0, -20, 20));
+            Point fp = points.get(rng.nextInt(points.size()));
+            Point sp;
+            do {
+                sp = points.get(rng.nextInt(points.size()));
+            } while (fp == sp);
+            centroids.add(new Centroid(fp.getX(), fp.getY(), sp.getX(), sp.getY()));
         }
     }
 
